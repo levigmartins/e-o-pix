@@ -1,0 +1,48 @@
+form {
+    display: grid;
+}
+
+form label {
+    margin-top: 17px;
+}
+
+form input {
+    height: 30px;
+    border: 1px solid var(--cor-borda-campo);
+    border-radius: 8px;
+}
+
+header {
+    justify-items: center;
+}
+
+.login-card {
+    width: 400px;
+    padding: 20px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background-color: var(--cor-superficie);
+}
+
+.login-card p {
+    justify-self: center;
+}
+
+.hyperlink {
+    color: var(--cor-primaria)
+}
+
+.create-acc-btn {
+    margin-top: 20px;
+    color: var(--cor-superficie);
+    background-color: var(--cor-primaria);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    font-size: large;
+    font-weight: bold;
+    padding: 15px;
+}
+
+footer {
+    justify-self: center;
+}

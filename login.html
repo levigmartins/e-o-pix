@@ -6,6 +6,7 @@
     <title>E o meu pix?</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/login.css">
 </head>
 
@@ -15,8 +16,25 @@
         <p>Divida os gastos do grupo por item e acerte tudo no Pix.</p>
     </header>
     <main>
-        <section>
-            <!-- card aqui -->
+        <section class="login-card">
+            <form>
+                <h2>Crie sua conta</h2>
+
+                <label>Nome Completo</label>
+                <input type="text" name="nomeCompleto">
+
+                <label>E-mail</label>
+                <input type="text" name="email">
+
+                <label>Senha</label>
+                <input type="password" name="senha">Mínimo de 6 caracteres.</input>
+
+                <label>Chave Pix padrão</label>
+                <input type="text" name="nomeCompleto" placeholder="CPF, e-mail, telefone ou chave aleatória">É para essa chave que seus amigos vão te pagar.</input>
+
+                <button class="create-acc-btn">Criar conta</button>
+            </form>
+            <p>Já tem conta? <a href="#" class="hyperlink">Entrar</a></p>
         </section>
     </main>
     <footer>
