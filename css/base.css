@@ -1,0 +1,11 @@
+:root {
+  --cor-fundo: #F4F5F2;        /* fundo da página */
+  --cor-superficie: #FFFFFF;   /* card, campos, aba ativa */
+  --cor-borda: #E1E4DF;        /* borda do card */
+  --cor-borda-campo: #C9CEC8;  /* borda dos inputs */
+  --cor-texto: #1C2321;        /* texto principal, títulos */
+  --cor-texto-suave: #5B6662;  /* subtítulo, dicas, rodapé, aba inativa */
+  --cor-primaria: #0B6E61;     /* logo, "pix?", botão, links */
+  --cor-primaria-hover: #08493F; /* hover de links e botão */
+  --cor-abas-fundo: #EEF0EC;   /* fundo do seletor Entrar/Criar conta */
+}
