@@ -354,3 +354,123 @@ function renderRightSidebarPerfil() {
         </div>
     `;
 }
+
+//Nova Despesa
+function renderViewNovaDespesa(grupoId) {
+    const grupo = appState.grupos.find(g => g.id === grupoId);
+    if (!grupo) return '<p>Grupo não encontrado.</p>';
+
+    const usuarioLogado = appState.usuarioLogado;
+
+    const botoesParticipantes = grupo.membros.map(m => {
+        const isVoce = m.id === usuarioLogado.id;
+        const nomeExibicao = isVoce ? 'Você (Mariana)' : m.nome;
+        const avatarStyle = isVoce 
+            ? `background: #E0F2F1; color: var(--cor-primaria);` 
+            : `background: ${m.corFundo || '#eee'}; color: ${m.corTexto || '#333'};`;
+
+        return `
+            <button type="button" 
+                    class="btn-participante ${isVoce ? 'selecionado' : ''}" 
+                    data-membro-id="${m.id}"
+                    onclick="toggleParticipante(this)">
+                <div class="avatar-participante" style="${avatarStyle}">${m.iniciais}</div>
+                <span>${nomeExibicao}</span>
+            </button>
+        `;
+    }).join('');
+
+    const opcoesPagador = grupo.membros.map(m => {
+        const isVoce = m.id === usuarioLogado.id;
+        const nomeExibicao = isVoce ? `Você (Mariana)` : m.nome;
+        return `<option value="${m.id}">${nomeExibicao}</option>`;
+    }).join('');
+
+    return `
+        <section id="view-nova-despesa" class="view-section">
+            <div class="card-nova-despesa">
+                <h2>Nova despesa</h2>
+                <p class="texto-suave" style="margin-bottom: 24px;">
+                    Marque só quem consumiu esse item. O valor é dividido entre essas pessoas.
+                </p>
+
+                <form id="form-nova-despesa" onsubmit="salvarDespesa(event, '${grupoId}')">
+                    <!-- Descrição -->
+                    <div class="form-group">
+                        <label for="descricao">Descrição</label>
+                        <input type="text" id="descricao" name="descricao" 
+                               placeholder="Pizza de sábado" required>
+                    </div>
+
+                    <!-- Linha: Valor, Data, Categoria -->
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="valor">Valor (R$)</label>
+                            <input type="number" id="valor" name="valor" 
+                                   step="0.01" min="0.01" 
+                                   placeholder="90.00" 
+                                   value="90.00"
+                                   oninput="atualizarDivisao('${grupoId}')" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="data">Data</label>
+                            <input type="date" id="data" name="data" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoria">Categoria</label>
+                            <select id="categoria" name="categoria">
+                                <option value="Alimentação">Alimentação</option>
+                                <option value="Transporte">Transporte</option>
+                                <option value="Hospedagem">Hospedagem</option>
+                                <option value="Bebidas">Bebidas</option>
+                                <option value="Lazer">Lazer</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Quem pagou -->
+                    <div class="form-group">
+                        <label for="pagador">Quem pagou?</label>
+                        <select id="pagador" name="pagador" required>
+                            ${opcoesPagador}
+                        </select>
+                    </div>
+
+                    <!-- Quem participou -->
+                    <div class="form-group">
+                        <label>Quem participou?</label>
+                        <div class="grid-participantes" id="grid-participantes">
+                            ${botoesParticipantes}
+                        </div>
+                        <button type="button" class="link-marcar-todos" 
+                                onclick="toggleTodosParticipantes('${grupoId}')">
+                            Marcar todos
+                        </button>
+                    </div>
+
+                    <!-- Resumo da divisão (atualizado em tempo real) -->
+                    <div class="resumo-divisao" id="resumo-divisao">
+                        <span id="texto-divisao">R$ 90,00 dividido entre 1 pessoa</span>
+                        <strong id="valor-por-pessoa">R$ 90,00 cada</strong>
+                    </div>
+
+                    <!-- Ações -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-outline" 
+                                onclick="window.location.hash='#grupo/${grupoId}'">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            Salvar despesa
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    `;
+}
+
+function renderRightSidebarNovaDespesa(grupoId) {
+    return renderRightSidebarGrupoAtivo(grupoId);
+}
