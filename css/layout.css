@@ -1,4 +1,6 @@
 body {
     background: var(--cor-fundo);
     color: var(--cor-texto);
+    display: grid;
+    justify-content: center;
 }

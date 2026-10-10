@@ -1,0 +1,158 @@
+/* Página: coluna única centralizada na tela */
+body {
+    margin: 0;
+    padding: 32px 16px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+}
+
+/* Cabeçalho: logo e subtítulo */
+header {
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+header h1 span {
+    color: var(--cor-primaria);
+}
+
+header p {
+    margin: 8px 0 0;
+    color: var(--cor-texto-suave);
+}
+
+/* Card */
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    padding: 24px;
+    background-color: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+}
+
+/* Seletor Entrar / Criar conta */
+.abas {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 8px;
+    background-color: var(--cor-abas-fundo);
+    border-radius: 8px;
+}
+
+.aba {
+    flex: 1;
+    min-height: 40px;
+    border: none;
+    border-radius: 6px;
+    background-color: transparent;
+    color: var(--cor-texto-suave);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.aba.ativa {
+    background-color: var(--cor-superficie);
+    color: var(--cor-texto);
+}
+
+/* Formulários */
+form h2 {
+    margin: 16px 0 4px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+form label,
+form input {
+    display: block;
+}
+
+form label {
+    margin-top: 16px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+form input {
+    width: 100%;
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    border: 1px solid var(--cor-borda-campo);
+    border-radius: 8px;
+    background-color: var(--cor-superficie);
+    color: var(--cor-texto);
+    font-size: 15px;
+}
+
+form input:focus {
+    outline: 2px solid var(--cor-primaria);
+    border-color: var(--cor-primaria);
+}
+
+.dica {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--cor-texto-suave);
+}
+
+/* Botão principal */
+.botao-primario {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 24px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--cor-primaria);
+    color: var(--cor-superficie);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.botao-primario:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+/* Texto "Já tem conta? Entrar" */
+.troca {
+    margin: 16px 0 0;
+    text-align: center;
+    font-size: 14px;
+    color: var(--cor-texto-suave);
+}
+
+.troca a {
+    color: var(--cor-primaria);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.troca a:hover {
+    color: var(--cor-primaria-hover);
+    text-decoration: underline;
+}
+
+/* Rodapé */
+footer p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--cor-texto-suave);
+}

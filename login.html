@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>E o meu pix?</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/login.css">
 </head>
@@ -14,14 +15,61 @@
         <h1>E o meu <span>pix?</span></h1>
         <p>Divida os gastos do grupo por item e acerte tudo no Pix.</p>
     </header>
+
     <main>
-        <section>
-            <!-- card aqui -->
+        <section class="login-card">
+            <!-- Seletor Entrar / Criar conta -->
+            <div class="abas">
+                <button type="button" id="aba-entrar" class="aba ativa">Entrar</button>
+                <button type="button" id="aba-criar" class="aba">Criar conta</button>
+            </div>
+
+            <!-- Formulário de login -->
+            <form id="form-entrar" method="post" action="app.html#grupos">
+                <h2>Bem-vindo de volta</h2>
+
+                <label for="entrar-email">E-mail</label>
+                <input type="email" id="entrar-email" name="email">
+
+                <label for="entrar-senha">Senha</label>
+                <input type="password" id="entrar-senha" name="senha">
+
+                <button type="submit" class="botao-primario">Entrar</button>
+
+                <p class="troca">Ainda não tem conta? <a href="#" id="link-criar">Criar conta</a></p>
+            </form>
+
+            <!-- Formulário de cadastro -->
+            <form id="form-criar" method="post" action="app.html#grupos" hidden>
+                <h2>Crie sua conta</h2>
+
+                <label for="criar-nome">Nome completo</label>
+                <input type="text" id="criar-nome" name="nome">
+
+                <label for="criar-email">E-mail</label>
+                <input type="email" id="criar-email" name="email">
+
+                <label for="criar-senha">Senha</label>
+                <input type="password" id="criar-senha" name="senha">
+                <p class="dica">Mínimo de 6 caracteres.</p>
+
+                <label for="criar-pix">Chave Pix padrão</label>
+                <input type="text" id="criar-pix" name="chavePix"
+                    placeholder="CPF, e-mail, telefone ou chave aleatória">
+                <p class="dica">É para essa chave que seus amigos vão te pagar.</p>
+
+                <button type="submit" class="botao-primario">Criar conta</button>
+
+                <p class="troca">Já tem conta? <a href="#" id="link-entrar">Entrar</a></p>
+            </form>
         </section>
     </main>
+
     <footer>
         <p>INF321 · UFV · 2026</p>
     </footer>
+
+    <script src="js/login.js"></script>
 </body>
 
 </html>

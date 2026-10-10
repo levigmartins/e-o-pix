@@ -9,3 +9,14 @@
   --cor-primaria-hover: #08493F; /* hover de links e botão */
   --cor-abas-fundo: #EEF0EC;   /* fundo do seletor Entrar/Criar conta */
 }
+
+/* Fonte do projeto: Manrope (Google Fonts), com fallback genérico */
+body {
+  font-family: "Manrope", sans-serif;
+}
+
+/* Campos e botões não herdam a fonte do body por padrão */
+input,
+button {
+  font-family: inherit;
+}
