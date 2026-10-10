@@ -69,3 +69,51 @@ const appState = {
 function formatarMoeda(valor) {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
 }
+
+appState.fechamentos = {
+    'g1': {
+        totalGasto: 760.00,
+        custoMedio: 190.00,
+        qtdDespesas: 4,
+        membros: [
+            { id: 'u2', nome: 'Júlia', iniciais: 'JS', corFundo: '#FCE4EC', corTexto: '#C2185B', pagou: 400.00, consumiu: 145.00, saldo: 255.00 },
+            { id: 'u3', nome: 'Gabriel', iniciais: 'GA', corFundo: '#E3F2FD', corTexto: '#1565C0', pagou: 180.00, consumiu: 215.00, saldo: -35.00 },
+            { id: 'u1', nome: 'Mariana', iniciais: 'MC', corFundo: '#E0F2F1', corTexto: '#0B6E61', pagou: 120.00, consumiu: 185.00, saldo: -65.00, isVoce: true },
+            { id: 'u4', nome: 'Lucas', iniciais: 'LU', corFundo: '#FFF3E0', corTexto: '#E65100', pagou: 60.00, consumiu: 215.00, saldo: -155.00 }
+        ],
+        transferencias: [
+            {
+                id: 't1',
+                devedorId: 'u4',
+                devedorNome: 'Lucas',
+                credorId: 'u2',
+                credorNome: 'Júlia',
+                valor: 155.00,
+                status: 'pago',
+                dataPagamento: '16/09'
+            },
+            {
+                id: 't2',
+                devedorId: 'u1',
+                devedorNome: 'Mariana',
+                credorId: 'u2',
+                credorNome: 'Júlia',
+                valor: 65.00,
+                status: 'pendente',
+                chavePixCredor: 'julia.santos@email.com',
+                tipoChavePix: 'e-mail'
+            },
+            {
+                id: 't3',
+                devedorId: 'u3',
+                devedorNome: 'Gabriel',
+                credorId: 'u2',
+                credorNome: 'Júlia',
+                valor: 35.00,
+                status: 'pendente',
+                chavePixCredor: 'julia.santos@email.com',
+                tipoChavePix: 'e-mail'
+            }
+        ]
+    }
+};

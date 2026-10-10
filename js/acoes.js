@@ -131,3 +131,80 @@ function formatarData(dataISO) {
     const [ano, mes, dia] = dataISO.split('-');
     return `${dia} ${meses[parseInt(mes) - 1]}`;
 }
+
+function marcarComoPago(grupoId, transferenciaId) {
+    const fechamento = appState.fechamentos[grupoId];
+    if (!fechamento) return;
+
+    const transferencia = fechamento.transferencias.find(t => t.id === transferenciaId);
+    if (!transferencia) return;
+
+    // Atualiza o status
+    transferencia.status = 'pago';
+    
+    // Data de hoje
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    transferencia.dataPagamento = `${dia}/${mes}`;
+
+    renderizarApp();
+}
+
+function desfazerPagamento(grupoId, transferenciaId) {
+    const fechamento = appState.fechamentos[grupoId];
+    if (!fechamento) return;
+
+    const transferencia = fechamento.transferencias.find(t => t.id === transferenciaId);
+    if (!transferencia) return;
+
+    transferencia.status = 'pendente';
+    delete transferencia.dataPagamento;
+
+    renderizarApp();
+}
+
+function copiarChavePix(chave, botao) {
+    // Tenta usar a API moderna de clipboard
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(chave).then(() => {
+            exibirFeedbackCopiar(botao);
+        }).catch(() => {
+            // Fallback para navegadores mais antigos
+            copiarChaveFallback(chave, botao);
+        });
+    } else {
+        copiarChaveFallback(chave, botao);
+    }
+}
+
+function copiarChaveFallback(chave, botao) {
+    const textarea = document.createElement('textarea');
+    textarea.value = chave;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        document.execCommand('copy');
+        exibirFeedbackCopiar(botao);
+    } catch (e) {
+        alert('Não foi possível copiar. Chave: ' + chave);
+    }
+    document.body.removeChild(textarea);
+}
+
+function exibirFeedbackCopiar(botao) {
+    const textoOriginal = botao.textContent;
+    botao.textContent = '✓ Copiado!';
+    botao.style.background = '#E0F2F1';
+    botao.style.color = 'var(--cor-primaria)';
+    botao.style.borderColor = 'var(--cor-primaria)';
+
+    setTimeout(() => {
+        botao.textContent = textoOriginal;
+        botao.style.background = '';
+        botao.style.color = '';
+        botao.style.borderColor = '';
+    }, 2000);
+}

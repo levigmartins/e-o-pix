@@ -39,9 +39,12 @@ const rotas = {
     },
     '#fechamento': {
         titulo: 'Fechamento de conta',
-        breadcrumb: '<a href="#grupos">Meus grupos</a> / Viagem Ouro Preto / Fechamento',
-        renderView: renderViewFechamento,
-        renderRightSidebar: renderRightSidebarFechamento,
+        breadcrumb: (params) => {
+            const grupo = appState.grupos.find(g => g.id === 'g1');
+            return `<a href="#grupos">Meus grupos</a> / ${grupo ? grupo.nome : 'Grupo'} / Fechamento`;
+        },
+        renderView: () => renderViewFechamento('g1'),
+        renderRightSidebar: () => renderRightSidebarFechamento(),
         acoesHeader: () => ``
     },
     '#perfil': {
