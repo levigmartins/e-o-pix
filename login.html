@@ -18,9 +18,9 @@
     <main>
         <section class="login-card">
             <!-- Seletor Entrar / Criar conta -->
-            <div class="abas">
-                <button type="button" id="aba-entrar" class="aba ativa">Entrar</button>
-                <button type="button" id="aba-criar" class="aba">Criar conta</button>
+            <div class="abas" role="tablist">
+                <button type="button" id="aba-entrar" class="aba ativa" role="tab" aria-selected="true">Entrar</button>
+                <button type="button" id="aba-criar" class="aba" role="tab" aria-selected="false">Criar conta</button>
             </div>
 
             <!-- Formulário de login -->
@@ -28,10 +28,10 @@
                 <h2>Bem-vindo de volta</h2>
 
                 <label for="entrar-email">E-mail</label>
-                <input type="email" id="entrar-email" name="email">
+                <input type="email" id="entrar-email" name="email" required autocomplete="email" placeholder="seu.email@exemplo.com">
 
                 <label for="entrar-senha">Senha</label>
-                <input type="password" id="entrar-senha" name="senha">
+                <input type="password" id="entrar-senha" name="senha" required autocomplete="current-password" placeholder="••••••••">
 
                 <button type="submit" class="botao-primario">Entrar</button>
 
@@ -43,17 +43,17 @@
                 <h2>Crie sua conta</h2>
 
                 <label for="criar-nome">Nome completo</label>
-                <input type="text" id="criar-nome" name="nome">
+                <input type="text" id="criar-nome" name="nome" required autocomplete="name" placeholder="Nome Sobrenome">
 
                 <label for="criar-email">E-mail</label>
-                <input type="email" id="criar-email" name="email">
+                <input type="email" id="criar-email" name="email" required autocomplete="email" placeholder="seu.email@exemplo.com">
 
                 <label for="criar-senha">Senha</label>
-                <input type="password" id="criar-senha" name="senha">
+                <input type="password" id="criar-senha" name="senha" required minlength="6" autocomplete="new-password" placeholder="••••••••">
                 <p class="dica">Mínimo de 6 caracteres.</p>
 
                 <label for="criar-pix">Chave Pix padrão</label>
-                <input type="text" id="criar-pix" name="chavePix"
+                <input type="text" id="criar-pix" name="chavePix" required
                     placeholder="CPF, e-mail, telefone ou chave aleatória">
                 <p class="dica">É para essa chave que seus amigos vão te pagar.</p>
 

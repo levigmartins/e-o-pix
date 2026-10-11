@@ -8,9 +8,9 @@ function renderViewGrupos() {
             : `Você deve<br><strong class="${classeSaldo}">${formatarMoeda(Math.abs(g.saldoUsuario))}</strong>`;
 
         return `
-            <div class="card-grupo" onclick="window.location.hash = '#grupo/${g.id}'">
+            <a href="#grupo/${g.id}" class="card-grupo" aria-label="Grupo ${g.nome}">
                 <div class="card-grupo-header">
-                    <div class="avatar-grupo" style="background:${g.corFundo}; color:${g.corTexto};">${g.iniciais}</div>
+                    <div class="avatar-grupo" style="background:${g.corFundo}; color:${g.corTexto};" aria-hidden="true">${g.iniciais}</div>
                     <div class="card-grupo-info">
                         <h4>${g.nome}</h4>
                         <span>${g.membros.length} participantes</span>
@@ -19,7 +19,7 @@ function renderViewGrupos() {
                 <div class="card-grupo-saldo">
                     ${textoSaldo}
                 </div>
-            </div>
+            </a>
         `;
     }).join('');
 
@@ -409,28 +409,31 @@ function renderViewPerfil() {
                 </div>
             </div>
 
-            <div class="card-form">
+            <form id="form-perfil" class="card-form" onsubmit="salvarPerfil(event)">
                 <h3>Dados pessoais</h3>
                 <div class="grid-2-col">
                     <div>
-                        <label>Nome completo</label>
-                        <input type="text" value="Mariana Costa">
+                        <label for="perfil-nome">Nome completo</label>
+                        <input type="text" id="perfil-nome" name="nome" value="${appState.usuarioLogado.nome}" required autocomplete="name">
                     </div>
                     <div>
-                        <label>E-mail</label>
-                        <input type="email" value="mariana.costa@ufv.br">
+                        <label for="perfil-email">E-mail</label>
+                        <input type="email" id="perfil-email" name="email" value="${appState.usuarioLogado.email}" required autocomplete="email">
                     </div>
                     <div>
-                        <label>Telefone</label>
-                        <input type="tel" value="(31) 98765-4321">
+                        <label for="perfil-telefone">Telefone</label>
+                        <input type="tel" id="perfil-telefone" name="telefone" value="(31) 98765-4321" autocomplete="tel">
                     </div>
                     <div>
-                        <label>Chave Pix</label>
-                        <input type="text" value="mariana.costa@ufv.br">
+                        <label for="perfil-pix">Chave Pix</label>
+                        <input type="text" id="perfil-pix" name="chavePix" value="${appState.usuarioLogado.chavePix}" required>
                     </div>
                 </div>
-                <button class="btn-primary" style="margin-top:16px; width:fit-content;">Salvar alterações</button>
-            </div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-top: 16px;">
+                    <button type="submit" class="btn-primary" style="width:fit-content;">Salvar alterações</button>
+                    <span id="feedback-salvar-perfil" style="display: none; font-size: 0.85rem; color: var(--cor-primaria); font-weight: 500;">✓ Alterações salvas!</span>
+                </div>
+            </form>
 
             <div class="card-tabela">
                 <h3>Grupos arquivados</h3>

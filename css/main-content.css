@@ -85,7 +85,15 @@
     border-radius: 12px;
     padding: 20px;
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
     transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-grupo:focus-visible {
+    outline: 2px solid var(--cor-primaria);
+    outline-offset: 2px;
 }
 
 .card-grupo:hover {

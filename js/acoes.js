@@ -347,3 +347,31 @@ function entrarComCodigo(event) {
         window.location.hash = `#grupo/${novoId}`;
     }, 800);
 }
+
+function salvarPerfil(event) {
+    event.preventDefault();
+
+    const inputNome = document.getElementById('perfil-nome');
+    const inputEmail = document.getElementById('perfil-email');
+    const inputPix = document.getElementById('perfil-pix');
+    const feedback = document.getElementById('feedback-salvar-perfil');
+
+    if (!inputNome || !inputEmail || !inputPix) return;
+
+    appState.usuarioLogado.nome = inputNome.value.trim();
+    appState.usuarioLogado.email = inputEmail.value.trim();
+    appState.usuarioLogado.chavePix = inputPix.value.trim();
+
+    // Atualiza nome na barra lateral
+    const elUserName = document.querySelector('.user-name');
+    if (elUserName) {
+        elUserName.textContent = appState.usuarioLogado.nome;
+    }
+
+    if (feedback) {
+        feedback.style.display = 'inline';
+        setTimeout(() => {
+            feedback.style.display = 'none';
+        }, 2000);
+    }
+}

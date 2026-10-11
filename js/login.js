@@ -34,9 +34,13 @@ function mostrarAba(aba) {
 
     if (entrarAtivo) {
         abaEntrar.classList.add("ativa");
+        abaEntrar.setAttribute("aria-selected", "true");
         abaCriar.classList.remove("ativa");
+        abaCriar.setAttribute("aria-selected", "false");
     } else {
         abaCriar.classList.add("ativa");
+        abaCriar.setAttribute("aria-selected", "true");
         abaEntrar.classList.remove("ativa");
+        abaEntrar.setAttribute("aria-selected", "false");
     }
 }
