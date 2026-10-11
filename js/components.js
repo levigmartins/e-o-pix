@@ -210,25 +210,27 @@ function renderViewFechamento(grupoId = 'g1') {
             <!-- Tabela de Saldos -->
             <div class="card-tabela">
                 <h3>Saldo de cada membro</h3>
-                <table class="tabela-saldos">
-                    <thead>
-                        <tr>
-                            <th>Membro</th>
-                            <th>Pagou</th>
-                            <th>Consumiu</th>
-                            <th>Saldo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${linhasSaldos}
-                        <tr class="linha-total">
-                            <td>Total</td>
-                            <td>${formatarMoeda(fechamento.totalGasto)}</td>
-                            <td>${formatarMoeda(fechamento.totalGasto)}</td>
-                            <td>R$ 0,00</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="tabela-wrapper">
+                    <table class="tabela-saldos">
+                        <thead>
+                            <tr>
+                                <th>Membro</th>
+                                <th>Pagou</th>
+                                <th>Consumiu</th>
+                                <th>Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${linhasSaldos}
+                            <tr class="linha-total">
+                                <td>Total</td>
+                                <td>${formatarMoeda(fechamento.totalGasto)}</td>
+                                <td>${formatarMoeda(fechamento.totalGasto)}</td>
+                                <td>R$ 0,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Transferências para quitar -->
@@ -405,16 +407,18 @@ function renderViewPerfil() {
             <div class="card-tabela">
                 <h3>Grupos arquivados</h3>
                 <p class="texto-suave">Grupos já encerrados. Abra para ver o extrato completo.</p>
-                <table class="tabela-saldos">
-                    <thead>
-                        <tr><th>Grupo</th><th>Encerrado em</th><th>Membros</th><th>Total</th><th></th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Calourada 2026/1</td><td>20/04/2026</td><td>9</td><td>R$ 612,00</td><td><a href="#" class="link-primario">Ver extrato</a></td></tr>
-                        <tr><td>Aniversário da Bia</td><td>02/03/2026</td><td>6</td><td>R$ 348,90</td><td><a href="#" class="link-primario">Ver extrato</a></td></tr>
-                        <tr><td>Viagem Capítulo</td><td>18/01/2026</td><td>5</td><td>R$ 1.120,00</td><td><a href="#" class="link-primario">Ver extrato</a></td></tr>
-                    </tbody>
-                </table>
+                <div class="tabela-wrapper">
+                    <table class="tabela-saldos">
+                        <thead>
+                            <tr><th>Grupo</th><th>Encerrado em</th><th>Membros</th><th>Total</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Calourada 2026/1</td><td>20/04/2026</td><td>9</td><td>R$ 612,00</td><td><a href="#" class="link-primario">Ver extrato</a></td></tr>
+                            <tr><td>Aniversário da Bia</td><td>02/03/2026</td><td>6</td><td>R$ 348,90</td><td><a href="#" class="link-primario">Ver extrato</a></td></tr>
+                            <tr><td>Viagem Capítulo</td><td>18/01/2026</td><td>5</td><td>R$ 1.120,00</td><td><a href="#" class="link-primario">Ver extrato</a></td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
     `;

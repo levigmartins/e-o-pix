@@ -183,3 +183,9 @@
 .rs-section > .rs-btn-outline:last-child {
   margin-top: 24px; /* Garante um espaço mínimo */
 }
+
+@media (max-width: 1024px) {
+  .sidebar-direita {
+    display: none;
+  }
+}

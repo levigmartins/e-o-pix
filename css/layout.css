@@ -11,3 +11,26 @@ body {
   height: 100vh;
   width: 100vw;
 }
+
+/* Responsividade para Telas Medias , colocando o grid em duas colunas */
+@media (max-width: 1024px) {
+  .app-layout{
+    grid-template-columns: var(--largura-sidebar-esquerda) 1fr;
+  }
+}
+
+/* Responsividade para Telas Pequenas , colocando o layout em fluxo natural */
+@media (max-width: 768px){
+  body {
+    height: auto;
+    overflow-y: auto; /* permite scroll na página inteira */
+  }
+  .app-layout {
+    display: block;
+    height: auto;
+    width: 100%;
+    min-height: 100vh;
+  }
+}
+
+

@@ -287,6 +287,12 @@
 .resumo-item span { font-size: 0.85rem; color: var(--cor-texto-suave); }
 .resumo-item strong { font-size: 1.25rem; }
 
+.tabela-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .tabela-saldos {
     width: 100%;
     border-collapse: collapse;
@@ -305,47 +311,6 @@
 .linha-destaque { background: #F1F8F7; }
 .linha-total { font-weight: 700; border-top: 2px solid var(--cor-borda); }
 
-/* Transferências */
-.transferencia-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    border: 1px solid var(--cor-borda);
-    border-radius: 8px;
-    margin-top: 12px;
-}
-
-.transferencia-item.destaque {
-    border-color: var(--cor-primaria);
-    background: #F1F8F7;
-}
-
-.pix-box {
-    display: flex;
-    gap: 16px;
-    margin-top: 12px;
-    padding: 16px;
-    background: var(--cor-fundo);
-    border-radius: 8px;
-}
-
-.qr-code-placeholder {
-    width: 100px;
-    height: 100px;
-    background: #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    color: #666;
-    border-radius: 8px;
-}
-
-.pix-info { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-.pix-chave { display: flex; gap: 8px; }
-.pix-chave input { flex: 1; padding: 8px; border: 1px solid var(--cor-borda-campo); border-radius: 6px; }
-
 .btn-outline-sm {
     background: transparent;
     border: 1px solid var(--cor-borda-campo);
@@ -354,6 +319,7 @@
     font-size: 0.8rem;
     font-weight: 600;
 }
+
 
 /* Perfil */
 .perfil-header { 
@@ -566,12 +532,17 @@
 }
 
 .transferencia-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
     border: 1px solid var(--cor-borda);
     border-radius: 12px;
     padding: 16px 20px;
     background: var(--cor-superficie);
     transition: border-color 0.2s;
 }
+
 
 .transferencia-item.destaque {
     border-color: var(--cor-primaria);
@@ -616,6 +587,8 @@
     border: 1px solid var(--cor-borda);
     border-radius: 12px;
     align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .qr-code-container {
@@ -696,22 +669,100 @@
     font-size: 1rem;
 }
 
-/* Ajuste responsivo para o módulo Pix */
-@media (max-width: 768px) {
-    .pix-box {
-        flex-direction: column;
-    }
-    
-    .qr-code-container {
-        align-self: center;
-    }
-    
-    .transferencia-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .fechamento-header {
-        flex-direction: column;
-    }
+@media (max-width: 1024px) {
+  /* Evita que o módulo Pix estoure quando a coluna central for estreita */
+  .pix-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .qr-code-container {
+    align-self: center;
+  }
+
+  .qr-code-placeholder {
+    width: 120px;
+    height: 120px;
+  }
+
+  .pix-info {
+    width: 100%;
+  }
+
+  .pix-chave {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pix-chave input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .pix-chave button {
+    width: 100%;
+  }
+
+  .transferencia-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .transferencia-acoes {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 }
+
+@media (max-width: 768px) {
+  /* Espaçamento inferior de 84px impede que a barra fixa cubra botões e tabelas */
+  .main-content {
+    display: block;
+    width: 100%;
+    padding: 20px 16px 84px 16px;
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .top-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Converte grids de formulários, resumos e inputs em coluna única */
+  .grid-forms,
+  .grid-resumo,
+  .grid-2-col,
+  .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Garante que o card da tabela acomode rolagem horizontal suave */
+  .card-tabela {
+    padding: 16px;
+  }
+
+  .tabela-saldos {
+    min-width: 460px;
+  }
+
+  .tabela-saldos th,
+  .tabela-saldos td {
+    white-space: nowrap;
+    padding: 10px 8px;
+    font-size: 0.85rem;
+  }
+
+  .fechamento-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+
+
