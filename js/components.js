@@ -32,21 +32,22 @@ function renderViewGrupos() {
 
             <h3 style="margin-top: 32px;">Novo grupo</h3>
             <div class="grid-forms">
-                <div class="card-form">
+                <form id="form-criar-grupo" class="card-form" onsubmit="criarGrupo(event)">
                     <h4>Criar um grupo</h4>
-                    <label>Nome do grupo</label>
-                    <input type="text" placeholder="Ex.: Viagem de fim de ano">
-                    <label>Descrição (opcional)</label>
-                    <textarea placeholder="Para que é esse grupo?"></textarea>
-                    <button class="btn-primary" style="margin-top:16px; width: fit-content;">Criar grupo</button>
-                </div>
-                <div class="card-form">
+                    <label for="nome-novo-grupo">Nome do grupo</label>
+                    <input type="text" id="nome-novo-grupo" placeholder="Ex.: Viagem de fim de ano" required maxlength="50">
+                    <label for="descricao-novo-grupo">Descrição (opcional)</label>
+                    <textarea id="descricao-novo-grupo" placeholder="Para que é esse grupo?" maxlength="200"></textarea>
+                    <button type="submit" class="btn-primary" style="margin-top:16px; width: fit-content;">Criar grupo</button>
+                </form>
+                <form id="form-entrar-grupo" class="card-form" onsubmit="entrarComCodigo(event)">
                     <h4>Entrar com código</h4>
                     <p class="texto-suave">Peça o código de convite para quem criou o grupo.</p>
-                    <label>Código de convite</label>
-                    <input type="text" placeholder="EX.: K7P2QX">
-                    <button class="btn-outline" style="margin-top:16px; width: fit-content;">Entrar no grupo</button>
-                </div>
+                    <label for="codigo-convite-input">Código de convite</label>
+                    <input type="text" id="codigo-convite-input" placeholder="Ex.: K7P2QX" required maxlength="10">
+                    <button type="submit" class="btn-outline" style="margin-top:16px; width: fit-content;">Entrar no grupo</button>
+                    <div id="feedback-entrar-codigo" style="display: none; margin-top: 12px; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px;"></div>
+                </form>
             </div>
         </section>
     `;
@@ -95,7 +96,7 @@ function renderViewGrupoAtivo(grupoId) {
                 <div class="avatar-grupo" style="background:${grupo.corFundo}; color:${grupo.corTexto}; width:48px; height:48px; font-size:1.2rem;">${grupo.iniciais}</div>
                 <div>
                     <h2>${grupo.nome}</h2>
-                    <span class="texto-suave">${grupo.membros.length} membros · código de convite K7P2QX</span>
+                    <span class="texto-suave">${grupo.membros.length} membros · código de convite ${grupo.codigoConvite || 'K7P2QX'}</span>
                 </div>
             </div>
 
@@ -479,13 +480,15 @@ function renderRightSidebarGrupoAtivo(grupoId) {
         `;
     }).join('');
 
+    const totalGasto = (appState.despesas[grupoId] || []).reduce((acc, d) => acc + d.valorTotal, 0);
+
     return `
         <div class="rs-section">
             <h3 class="rs-title">Saldos do grupo</h3>
             <p class="rs-subtitle">Quanto cada um pagou menos o que consumiu</p>
             ${membrosHTML}
             <div class="rs-divider"></div>
-            <div class="rs-row destaque"><span class="rs-label">Total gasto</span><span class="rs-value">R$ 760,00</span></div>
+            <div class="rs-row destaque"><span class="rs-label">Total gasto</span><span class="rs-value">${formatarMoeda(totalGasto)}</span></div>
             <button class="rs-btn-outline" style="margin-top: 24px;" onclick="window.location.hash='#fechamento'">Ver fechamento</button>
         </div>
     `;

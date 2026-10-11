@@ -5,7 +5,7 @@ const rotas = {
         breadcrumb: '<a href="#grupos">Meus grupos</a>',
         renderView: renderViewGrupos,
         renderRightSidebar: renderRightSidebarGrupos,
-        acoesHeader: () => `<button class="btn-primary">+ Novo grupo</button>`
+        acoesHeader: () => `<button class="btn-primary" onclick="document.getElementById('nome-novo-grupo')?.focus(); document.getElementById('form-criar-grupo')?.scrollIntoView({ behavior: 'smooth' });">+ Novo grupo</button>`
     },
     '#grupo/:id': {
         titulo: (params) => {

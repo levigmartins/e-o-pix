@@ -208,3 +208,142 @@ function exibirFeedbackCopiar(botao) {
         botao.style.borderColor = '';
     }, 2000);
 }
+
+function criarGrupo(event) {
+    event.preventDefault();
+
+    const inputNome = document.getElementById('nome-novo-grupo');
+    const inputDescricao = document.getElementById('descricao-novo-grupo');
+    if (!inputNome) return;
+
+    const nome = inputNome.value.trim();
+    const descricao = inputDescricao ? inputDescricao.value.trim() : '';
+
+    if (!nome) {
+        alert('Informe o nome do grupo.');
+        return;
+    }
+
+    const palavras = nome.split(/\s+/).filter(Boolean);
+    const iniciais = palavras.length === 1 
+        ? palavras[0].substring(0, 2).toUpperCase() 
+        : (palavras[0][0] + palavras[1][0]).toUpperCase();
+
+    const paletas = [
+        { fundo: '#FFF3E0', texto: '#E65100' },
+        { fundo: '#E3F2FD', texto: '#1565C0' },
+        { fundo: '#F3E5F5', texto: '#6A1B9A' },
+        { fundo: '#E8F5E9', texto: '#2E7D32' },
+        { fundo: '#FCE4EC', texto: '#C2185B' }
+    ];
+    const paleta = paletas[appState.grupos.length % paletas.length];
+
+    const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let codigoConvite = '';
+    for (let i = 0; i < 6; i++) {
+        codigoConvite += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+
+    const novoId = 'g' + Date.now();
+    const novoGrupo = {
+        id: novoId,
+        nome: nome,
+        descricao: descricao,
+        codigoConvite: codigoConvite,
+        iniciais: iniciais,
+        corFundo: paleta.fundo,
+        corTexto: paleta.texto,
+        membros: [
+            {
+                id: appState.usuarioLogado.id,
+                nome: appState.usuarioLogado.nome,
+                iniciais: appState.usuarioLogado.iniciais,
+                corFundo: '#E0F2F1',
+                corTexto: '#0B6E61'
+            }
+        ],
+        saldoUsuario: 0.00
+    };
+
+    appState.grupos.unshift(novoGrupo);
+    appState.despesas[novoId] = [];
+
+    window.location.hash = `#grupo/${novoId}`;
+}
+
+function entrarComCodigo(event) {
+    event.preventDefault();
+
+    const inputCodigo = document.getElementById('codigo-convite-input');
+    const containerFeedback = document.getElementById('feedback-entrar-codigo');
+    if (!inputCodigo) return;
+
+    const codigo = inputCodigo.value.trim().toUpperCase();
+
+    function exibirFeedback(mensagem, sucesso) {
+        if (!containerFeedback) {
+            alert(mensagem);
+            return;
+        }
+        containerFeedback.style.display = 'block';
+        containerFeedback.style.background = sucesso ? '#E0F2F1' : '#FFEBEE';
+        containerFeedback.style.color = sucesso ? '#0B6E61' : '#C62828';
+        containerFeedback.style.border = `1px solid ${sucesso ? '#B2DFDB' : '#FFCDD2'}`;
+        containerFeedback.textContent = mensagem;
+    }
+
+    if (!codigo || codigo.length < 4) {
+        exibirFeedback('Código inválido. Digite ao menos 4 caracteres.', false);
+        return;
+    }
+
+    let grupo = appState.grupos.find(g => (g.codigoConvite || '').toUpperCase() === codigo);
+
+    if (grupo) {
+        const usuarioJaNoGrupo = grupo.membros.some(m => m.id === appState.usuarioLogado.id);
+        if (!usuarioJaNoGrupo) {
+            grupo.membros.push({
+                id: appState.usuarioLogado.id,
+                nome: appState.usuarioLogado.nome,
+                iniciais: appState.usuarioLogado.iniciais,
+                corFundo: '#E0F2F1',
+                corTexto: '#0B6E61'
+            });
+        }
+        exibirFeedback(`✓ Você entrou no grupo "${grupo.nome}". Redirecionando...`, true);
+        setTimeout(() => {
+            window.location.hash = `#grupo/${grupo.id}`;
+        }, 800);
+        return;
+    }
+
+    const novoId = 'g' + Date.now();
+    const novoGrupo = {
+        id: novoId,
+        nome: `Grupo (${codigo})`,
+        descricao: 'Grupo adicionado por código de convite',
+        codigoConvite: codigo,
+        iniciais: codigo.substring(0, 2),
+        corFundo: '#E8F5E9',
+        corTexto: '#2E7D32',
+        membros: [
+            { id: 'u99', nome: 'Organizador', iniciais: 'OG', corFundo: '#FFF3E0', corTexto: '#E65100' },
+            {
+                id: appState.usuarioLogado.id,
+                nome: appState.usuarioLogado.nome,
+                iniciais: appState.usuarioLogado.iniciais,
+                corFundo: '#E0F2F1',
+                corTexto: '#0B6E61'
+            }
+        ],
+        saldoUsuario: 0.00
+    };
+
+    appState.grupos.unshift(novoGrupo);
+    appState.despesas[novoId] = [];
+
+    exibirFeedback(`✓ Você entrou no grupo "${novoGrupo.nome}". Redirecionando...`, true);
+    setTimeout(() => {
+        window.location.hash = `#grupo/${novoId}`;
+    }, 800);
+}
