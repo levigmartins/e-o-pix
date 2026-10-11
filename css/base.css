@@ -8,15 +8,35 @@
   --cor-primaria: #0B6E61;     /* logo, "pix?", botão, links */
   --cor-primaria-hover: #08493F; /* hover de links e botão */
   --cor-abas-fundo: #EEF0EC;   /* fundo do seletor Entrar/Criar conta */
+
+  --largura-sidebar-esquerda: 260px;
+  --largura-sidebar-direita: 320px;
 }
 
-/* Fonte do projeto: Manrope (Google Fonts), com fallback genérico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  font-family: "Manrope", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+/* outros */
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 /* Campos e botões não herdam a fonte do body por padrão */
 input,
 button {
   font-family: inherit;
+}
+
+button {
+  cursor: pointer;
 }

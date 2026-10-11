@@ -1,0 +1,185 @@
+.sidebar-direita {
+  background-color: var(--cor-superficie);
+  border-left: 1px solid var(--cor-borda);
+  padding: 32px 24px;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.rs-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--cor-texto);
+  margin-bottom: 8px;
+}
+
+.rs-subtitle {
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.rs-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.rs-row.destaque {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+.rs-label {
+  color: var(--cor-texto-suave);
+}
+
+.rs-value {
+  font-weight: 600;
+}
+
+.rs-value.positivo {
+  color: var(--cor-primaria);
+}
+
+.rs-value.negativo {
+  color: #D32F2F;
+}
+
+.rs-divider {
+  height: 1px;
+  background-color: var(--cor-borda);
+  margin: 16px 0;
+}
+
+.rs-card-pendencia {
+  background-color: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.rs-pendencia-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.rs-pendencia-nome {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--cor-texto);
+}
+
+.rs-pendencia-detalhe {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+}
+
+.badge-pago, .badge-pendente {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-pago {
+  background-color: #E0F2F1;
+  color: var(--cor-primaria);
+}
+
+.badge-pendente {
+  background-color: #FFF3E0;
+  color: #E65100;
+}
+
+.rs-membro-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--cor-fundo);
+}
+
+/* Destaque para o usuário logado */
+.rs-membro-row.ativo {
+  background-color: #F1F8F7;
+  margin: 0 -12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border-bottom: none;
+}
+
+.rs-membro-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.avatar-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.rs-btn-outline {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--cor-borda-campo);
+  border-radius: 8px;
+  color: var(--cor-texto);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.2s, border-color 0.2s;
+  cursor: pointer;
+  margin-top: auto; /* Empurra para o final se houver espaço */
+}
+
+.rs-btn-outline:hover {
+  background-color: var(--cor-fundo);
+  border-color: var(--cor-texto-suave);
+}
+
+.rs-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--cor-borda);
+  border-radius: 3px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.rs-progress-fill {
+  height: 100%;
+  background: var(--cor-primaria);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.rs-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+/* Remove a margem automatica do botão se não houver espaço sobrando */
+.rs-section > .rs-btn-outline:last-child {
+  margin-top: 24px; /* Garante um espaço mínimo */
+}

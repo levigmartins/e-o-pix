@@ -1,6 +1,13 @@
+/* Casca do app (só o app.html carrega este arquivo) */
 body {
-    background: var(--cor-fundo);
-    color: var(--cor-texto);
-    display: grid;
-    justify-content: center;
+  height: 100vh;
+  overflow: hidden; /* impede scroll na página inteira*/
+}
+
+/* layout principal */
+.app-layout {
+  display: grid;
+  grid-template-columns: var(--largura-sidebar-esquerda) 1fr var(--largura-sidebar-direita);
+  height: 100vh;
+  width: 100vw;
 }
