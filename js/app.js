@@ -38,13 +38,54 @@ const rotas = {
         acoesHeader: () => ``
     },
     '#fechamento': {
-        titulo: 'Fechamento de conta',
-        breadcrumb: (params) => {
-            const grupo = appState.grupos.find(g => g.id === 'g1');
-            return `<a href="#grupos">Meus grupos</a> / ${grupo ? grupo.nome : 'Grupo'} / Fechamento`;
+        titulo: (params) => {
+            const id = params?.id || appState.grupoAtivoId || (appState.grupos[0] && appState.grupos[0].id) || 'g1';
+            const grupo = appState.grupos.find(g => g.id === id);
+            return grupo ? `Fechamento · ${grupo.nome}` : 'Fechamento de conta';
         },
-        renderView: () => renderViewFechamento('g1'),
-        renderRightSidebar: () => renderRightSidebarFechamento(),
+        breadcrumb: (params) => {
+            const id = params?.id || appState.grupoAtivoId || (appState.grupos[0] && appState.grupos[0].id) || 'g1';
+            const grupo = appState.grupos.find(g => g.id === id);
+            return `<a href="#grupos">Meus grupos</a> / ${grupo ? `<a href="#grupo/${grupo.id}">${grupo.nome}</a> / ` : ''}Fechamento`;
+        },
+        renderView: (params) => {
+            const id = params?.id || appState.grupoAtivoId || (appState.grupos[0] && appState.grupos[0].id) || 'g1';
+            return renderViewFechamento(id);
+        },
+        renderRightSidebar: (params) => {
+            const id = params?.id || appState.grupoAtivoId || (appState.grupos[0] && appState.grupos[0].id) || 'g1';
+            return renderRightSidebarFechamento(id);
+        },
+        acoesHeader: () => ``
+    },
+    '#fechamento/:id': {
+        titulo: (params) => {
+            const id = params?.id || appState.grupoAtivoId || (appState.grupos[0] && appState.grupos[0].id) || 'g1';
+            const grupo = appState.grupos.find(g => g.id === id);
+            return grupo ? `Fechamento · ${grupo.nome}` : 'Fechamento de conta';
+        },
+        breadcrumb: (params) => {
+            const id = params?.id || appState.grupoAtivoId || (appState.grupos[0] && appState.grupos[0].id) || 'g1';
+            const grupo = appState.grupos.find(g => g.id === id);
+            return `<a href="#grupos">Meus grupos</a> / ${grupo ? `<a href="#grupo/${grupo.id}">${grupo.nome}</a> / ` : ''}Fechamento`;
+        },
+        renderView: (params) => renderViewFechamento(params.id),
+        renderRightSidebar: (params) => renderRightSidebarFechamento(params.id),
+        acoesHeader: () => ``
+    },
+    '#grupo/:id/fechamento': {
+        titulo: (params) => {
+            const id = params?.id || appState.grupoAtivoId || (appState.grupos[0] && appState.grupos[0].id) || 'g1';
+            const grupo = appState.grupos.find(g => g.id === id);
+            return grupo ? `Fechamento · ${grupo.nome}` : 'Fechamento de conta';
+        },
+        breadcrumb: (params) => {
+            const id = params?.id || appState.grupoAtivoId || (appState.grupos[0] && appState.grupos[0].id) || 'g1';
+            const grupo = appState.grupos.find(g => g.id === id);
+            return `<a href="#grupos">Meus grupos</a> / ${grupo ? `<a href="#grupo/${grupo.id}">${grupo.nome}</a> / ` : ''}Fechamento`;
+        },
+        renderView: (params) => renderViewFechamento(params.id),
+        renderRightSidebar: (params) => renderRightSidebarFechamento(params.id),
         acoesHeader: () => ``
     },
     '#perfil': {
@@ -90,6 +131,10 @@ function resolverRota() {
 function renderizarApp() {
     const { rota, params } = resolverRota();
     
+    if (params && params.id) {
+        appState.grupoAtivoId = params.id;
+    }
+
     const elBreadcrumb = document.getElementById('breadcrumb');
     const elPageTitle = document.getElementById('page-title');
     const elHeaderActions = document.getElementById('header-actions');
@@ -108,7 +153,11 @@ function renderizarApp() {
     const hashAtual = window.location.hash || '#grupos';
     navItems.forEach(item => {
         const rotaItem = item.getAttribute('data-rota');
-        if (hashAtual.startsWith(`#${rotaItem}`)) {
+        const isFechamento = rotaItem === 'fechamento' && hashAtual.includes('fechamento');
+        const isGrupos = rotaItem === 'grupos' && hashAtual.startsWith('#grupo') && !hashAtual.includes('fechamento');
+        const isPerfil = rotaItem === 'perfil' && hashAtual.startsWith('#perfil');
+
+        if (isFechamento || isGrupos || isPerfil) {
             item.classList.add('active');
         } else {
             item.classList.remove('active');

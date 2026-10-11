@@ -119,10 +119,37 @@ function renderViewGrupoAtivo(grupoId) {
  */
 function renderViewFechamento(grupoId = 'g1') {
     const grupo = appState.grupos.find(g => g.id === grupoId);
-    const fechamento = appState.fechamentos[grupoId];
     
-    if (!grupo || !fechamento) {
-        return '<p>Fechamento não disponível.</p>';
+    if (!grupo) {
+        return `
+            <section id="view-fechamento" class="view-section">
+                <div class="card-tabela" style="text-align: center; padding: 48px 24px;">
+                    <h3>Grupo não encontrado</h3>
+                    <p class="texto-suave" style="margin: 8px 0 24px;">O grupo solicitado não existe ou foi removido.</p>
+                    <button class="btn-primary" onclick="window.location.hash='#grupos'">Ver meus grupos</button>
+                </div>
+            </section>
+        `;
+    }
+
+    const fechamento = appState.fechamentos[grupoId];
+
+    if (!fechamento) {
+        return `
+            <section id="view-fechamento" class="view-section">
+                <div class="card-tabela" style="text-align: center; padding: 48px 24px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 16px;">📊</div>
+                    <h3>Nenhum fechamento pendente</h3>
+                    <p class="texto-suave" style="max-width: 440px; margin: 8px auto 24px;">
+                        O grupo <strong>${grupo.nome}</strong> ainda não possui despesas ou transferências para quitar.
+                    </p>
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn-outline" onclick="window.location.hash='#grupo/${grupo.id}'">Voltar ao grupo</button>
+                        <button class="btn-primary" onclick="window.location.hash='#grupo/${grupo.id}/nova-despesa'">+ Adicionar despesa</button>
+                    </div>
+                </div>
+            </section>
+        `;
     }
 
     // ===== 1. Calcular status geral =====
@@ -489,14 +516,21 @@ function renderRightSidebarGrupoAtivo(grupoId) {
             ${membrosHTML}
             <div class="rs-divider"></div>
             <div class="rs-row destaque"><span class="rs-label">Total gasto</span><span class="rs-value">${formatarMoeda(totalGasto)}</span></div>
-            <button class="rs-btn-outline" style="margin-top: 24px;" onclick="window.location.hash='#fechamento'">Ver fechamento</button>
+            <button class="rs-btn-outline" style="margin-top: 24px;" onclick="window.location.hash='#fechamento/${grupoId}'">Ver fechamento</button>
         </div>
     `;
 }
 
-function renderRightSidebarFechamento() {
-    const fechamento = appState.fechamentos['g1'];
-    if (!fechamento) return '';
+function renderRightSidebarFechamento(grupoId = 'g1') {
+    const fechamento = appState.fechamentos[grupoId];
+    if (!fechamento) {
+        return `
+            <div class="rs-section">
+                <h3 class="rs-title">Acerto de contas</h3>
+                <p class="rs-subtitle">Nenhuma pendência ou transferência calculada para este grupo.</p>
+            </div>
+        `;
+    }
 
     const total = fechamento.transferencias.length;
     const pagas = fechamento.transferencias.filter(t => t.status === 'pago').length;
