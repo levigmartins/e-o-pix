@@ -1,6 +1,4 @@
-/**
- * Tabela de Rotas,mapeia o padrão do hash para as funções de renderização.
- */
+// Tabela de Rotas,mapeia o padrão do hash para as funções de renderização
 const rotas = {
     '#grupos': {
         titulo: 'Meus grupos',
@@ -20,16 +18,33 @@ const rotas = {
         },
         renderView: (params) => renderViewGrupoAtivo(params.id),
         renderRightSidebar: (params) => renderRightSidebarGrupoAtivo(params.id),
-        acoesHeader: () => `
+        acoesHeader: (params) => `
             <button class="btn-outline">Convidar</button>
-            <button class="btn-primary">+ Adicionar despesa</button>
+            <button class="btn-primary" onclick="window.location.hash='#grupo/${params.id}/nova-despesa'">
+                + Adicionar despesa
+            </button>
         `
+    },
+    '#grupo/:id/nova-despesa': {
+        titulo: 'Nova despesa',
+        breadcrumb: (params) => {
+            const grupo = appState.grupos.find(g => g.id === params.id);
+            return `<a href="#grupos">Meus grupos</a> / 
+                    <a href="#grupo/${params.id}">${grupo ? grupo.nome : 'Grupo'}</a> / 
+                    Nova despesa`;
+        },
+        renderView: (params) => renderViewNovaDespesa(params.id),
+        renderRightSidebar: (params) => renderRightSidebarNovaDespesa(params.id),
+        acoesHeader: () => ``
     },
     '#fechamento': {
         titulo: 'Fechamento de conta',
-        breadcrumb: '<a href="#grupos">Meus grupos</a> / Viagem Ouro Preto / Fechamento',
-        renderView: renderViewFechamento,
-        renderRightSidebar: renderRightSidebarFechamento,
+        breadcrumb: (params) => {
+            const grupo = appState.grupos.find(g => g.id === 'g1');
+            return `<a href="#grupos">Meus grupos</a> / ${grupo ? grupo.nome : 'Grupo'} / Fechamento`;
+        },
+        renderView: () => renderViewFechamento('g1'),
+        renderRightSidebar: () => renderRightSidebarFechamento(),
         acoesHeader: () => ``
     },
     '#perfil': {
@@ -41,19 +56,18 @@ const rotas = {
     }
 };
 
-/**
- * Resolve a rota atual a partir do hash da URL.
- * Suporta parâmetros dinâmicos como #grupo/g1.
- */
-function resolverRota() {
-    let hash = window.location.hash || '#grupos'; // Rota padrão
 
+// Resolve a rota atual a partir do hash da URL
+function resolverRota() {
+    let hash = window.location.hash || '#grupos';
+
+    // rota exata
     if (rotas[hash]) {
         return { rota: rotas[hash], params: {} };
     }
 
-    // Tenta encontrar rotas com parâmetros
-    const partes = hash.split('/');
+    // rota com 1 parametro
+    const partes = hash.split('/').filter(p => p !== '');
     if (partes.length === 2) {
         const rotaBase = partes[0] + '/:id';
         if (rotas[rotaBase]) {
@@ -61,13 +75,18 @@ function resolverRota() {
         }
     }
 
-    // Vai para rota padrão se não encontrar
+    // rota com subrecurso
+    if (partes.length === 3) {
+        const rotaBase = partes[0] + '/:id/' + partes[2];
+        if (rotas[rotaBase]) {
+            return { rota: rotas[rotaBase], params: { id: partes[1] } };
+        }
+    }
+
+    // Fallback
     return { rota: rotas['#grupos'], params: {} };
 }
 
-/**
- * Chamada sempre que o hash muda.
- */
 function renderizarApp() {
     const { rota, params } = resolverRota();
     
@@ -78,13 +97,10 @@ function renderizarApp() {
     const elRightSidebar = document.getElementById('right-sidebar');
     const navItems = document.querySelectorAll('.nav-item');
 
-    
-    
     elPageTitle.textContent = typeof rota.titulo === 'function' ? rota.titulo(params) : rota.titulo;
     elBreadcrumb.innerHTML = typeof rota.breadcrumb === 'function' ? rota.breadcrumb(params) : rota.breadcrumb;
     elHeaderActions.innerHTML = typeof rota.acoesHeader === 'function' ? rota.acoesHeader(params) : '';
 
-  
     elContent.innerHTML = rota.renderView(params);
 
     elRightSidebar.innerHTML = rota.renderRightSidebar(params);
@@ -92,7 +108,6 @@ function renderizarApp() {
     const hashAtual = window.location.hash || '#grupos';
     navItems.forEach(item => {
         const rotaItem = item.getAttribute('data-rota');
-        // Verifica se a rota atual começa com a rota do item
         if (hashAtual.startsWith(`#${rotaItem}`)) {
             item.classList.add('active');
         } else {
@@ -100,15 +115,22 @@ function renderizarApp() {
         }
     });
 
-    document.querySelectorAll('.view-section').forEach(sec => {
-        sec.setAttribute('aria-hidden', 'false');
-    });
+    const inputData = document.getElementById('data');
+    if (inputData && !inputData.value) {
+        const hoje = new Date().toISOString().split('T')[0];
+        inputData.value = hoje;
+    }
+
+    // atualiza a divisao inicial se estiver na tela de nova despesa
+    if (window.location.hash.includes('nova-despesa')) {
+        const grupoId = params.id;
+        setTimeout(() => atualizarDivisao(grupoId), 0);
+    }
 
     elContent.scrollTop = 0;
 }
 
-
-// Escuta mudanças no hash da URL
+// Event listeners
 window.addEventListener('hashchange', renderizarApp);
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -116,5 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.hash = '#grupos';
     } else {
         renderizarApp();
+    }
+
+    // Logout
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
     }
 });

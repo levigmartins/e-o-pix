@@ -110,86 +110,255 @@ function renderViewGrupoAtivo(grupoId) {
         </section>
     `;
 }
+// components.js — Substituir a função renderViewFechamento
 
 /**
- * Gera o HTML da visão "Fechamento" (#fechamento)
+ * Gera o HTML da visão "Fechamento" completa.
+ * Inclui demonstrativo, tabela de saldos, transferências e módulo Pix.
  */
-function renderViewFechamento() {
+function renderViewFechamento(grupoId = 'g1') {
+    const grupo = appState.grupos.find(g => g.id === grupoId);
+    const fechamento = appState.fechamentos[grupoId];
+    
+    if (!grupo || !fechamento) {
+        return '<p>Fechamento não disponível.</p>';
+    }
+
+    // ===== 1. Calcular status geral =====
+    const totalTransferencias = fechamento.transferencias.length;
+    const transferenciasPagas = fechamento.transferencias.filter(t => t.status === 'pago').length;
+    const valorQuitado = fechamento.transferencias
+        .filter(t => t.status === 'pago')
+        .reduce((acc, t) => acc + t.valor, 0);
+    const valorTotal = fechamento.transferencias.reduce((acc, t) => acc + t.valor, 0);
+    const percentualQuitado = valorTotal > 0 ? (valorQuitado / valorTotal) * 100 : 0;
+
+    // ===== 2. Gerar linhas da tabela de saldos =====
+    const linhasSaldos = fechamento.membros.map(m => {
+        const classeSaldo = m.saldo >= 0 ? 'positivo' : 'negativo';
+        const sinal = m.saldo >= 0 ? '+' : '-';
+        const nomeExibicao = m.isVoce ? `${m.nome} (você)` : m.nome;
+        const classeLinha = m.isVoce ? 'linha-destaque' : '';
+
+        return `
+            <tr class="${classeLinha}">
+                <td>${nomeExibicao}</td>
+                <td>${formatarMoeda(m.pagou)}</td>
+                <td>${formatarMoeda(m.consumiu)}</td>
+                <td class="${classeSaldo}">${sinal} ${formatarMoeda(Math.abs(m.saldo))}</td>
+            </tr>
+        `;
+    }).join('');
+
+    // ===== 3. Gerar lista de transferências =====
+    const listaTransferencias = fechamento.transferencias.map(t => {
+        return renderTransferencia(t, grupoId);
+    }).join('');
+
+    // ===== 4. Botão "Encerrar grupo" =====
+    const podeEncerrar = transferenciasPagas === totalTransferencias;
+    const btnEncerrar = podeEncerrar
+        ? `<button class="btn-primary" onclick="alert('Grupo encerrado! (Simulação)')">Encerrar grupo</button>`
+        : `<button class="btn-primary" disabled 
+                   title="Disponível quando todos os pagamentos forem confirmados"
+                   style="opacity: 0.4; cursor: not-allowed;">
+               Encerrar grupo
+           </button>`;
+
     return `
         <section id="view-fechamento" class="view-section">
+            
+            <!-- Header com status de acerto -->
+            <div class="fechamento-header">
+                <div>
+                    <h2>Fechamento de conta</h2>
+                    <div class="badge-status-fechamento ${podeEncerrar ? 'concluido' : 'em-andamento'}">
+                        ${podeEncerrar 
+                            ? '✓ Todos os pagamentos confirmados' 
+                            : `Em acerto · ${transferenciasPagas} de ${totalTransferencias} pagamentos`}
+                    </div>
+                </div>
+                <div class="fechamento-progresso">
+                    <div class="rs-progress-bar" style="margin-bottom: 0;">
+                        <div class="rs-progress-fill" style="width: ${percentualQuitado}%;"></div>
+                    </div>
+                    <span class="texto-suave" style="font-size: 0.8rem; margin-top: 4px; display: block;">
+                        ${formatarMoeda(valorQuitado)} de ${formatarMoeda(valorTotal)} quitado
+                    </span>
+                </div>
+            </div>
+
+            <!-- Resumo -->
             <div class="card-resumo">
                 <h3>Resumo</h3>
                 <div class="grid-resumo">
                     <div class="resumo-item">
                         <span>Total gasto pelo grupo</span>
-                        <strong>R$ 760,00</strong>
+                        <strong>${formatarMoeda(fechamento.totalGasto)}</strong>
                     </div>
                     <div class="resumo-item">
                         <span>Custo médio por pessoa</span>
-                        <strong>R$ 190,00</strong>
+                        <strong>${formatarMoeda(fechamento.custoMedio)}</strong>
                     </div>
                     <div class="resumo-item">
                         <span>Despesas registradas</span>
-                        <strong>4</strong>
+                        <strong>${fechamento.qtdDespesas}</strong>
                     </div>
                 </div>
             </div>
 
+            <!-- Tabela de Saldos -->
             <div class="card-tabela">
                 <h3>Saldo de cada membro</h3>
                 <table class="tabela-saldos">
                     <thead>
-                        <tr><th>Membro</th><th>Pagou</th><th>Consumiu</th><th>Saldo</th></tr>
+                        <tr>
+                            <th>Membro</th>
+                            <th>Pagou</th>
+                            <th>Consumiu</th>
+                            <th>Saldo</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr><td>Júlia</td><td>R$ 400,00</td><td>R$ 145,00</td><td class="positivo">+ R$ 255,00</td></tr>
-                        <tr><td>Gabriel</td><td>R$ 180,00</td><td>R$ 215,00</td><td class="negativo">- R$ 35,00</td></tr>
-                        <tr class="linha-destaque"><td>Mariana (você)</td><td>R$ 120,00</td><td>R$ 185,00</td><td class="negativo">- R$ 65,00</td></tr>
-                        <tr><td>Lucas</td><td>R$ 60,00</td><td>R$ 215,00</td><td class="negativo">- R$ 155,00</td></tr>
-                        <tr class="linha-total"><td>Total</td><td>R$ 760,00</td><td>R$ 760,00</td><td>R$ 0,00</td></tr>
+                        ${linhasSaldos}
+                        <tr class="linha-total">
+                            <td>Total</td>
+                            <td>${formatarMoeda(fechamento.totalGasto)}</td>
+                            <td>${formatarMoeda(fechamento.totalGasto)}</td>
+                            <td>R$ 0,00</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
 
+            <!-- Transferências para quitar -->
             <div class="card-transferencias">
                 <h3>Transferências para quitar</h3>
-                <p class="texto-suave">O menor número de Pix para todo mundo ficar zerado</p>
-                
-                <div class="transferencia-item">
-                    <span>Lucas paga <strong>R$ 155,00</strong> para Júlia</span>
-                    <span class="badge-pago">Pago em 16/09</span>
-                    <button class="btn-outline-sm">Desfazer</button>
-                </div>
-
-                <div class="transferencia-item destaque">
-                    <span>Você paga <strong>R$ 65,00</strong> para Júlia</span>
-                    <span class="badge-pendente">Pendente</span>
-                    <div class="pix-box">
-                        <div class="qr-code-placeholder">QR Code</div>
-                        <div class="pix-info">
-                            <span>Chave Pix da Júlia (e-mail)</span>
-                            <div class="pix-chave">
-                                <input type="text" value="julia.santos@email.com" readonly>
-                                <button class="btn-outline-sm">Copiar chave</button>
-                            </div>
-                            <button class="btn-primary" style="margin-top:8px; width:fit-content;">Marcar como pago</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="transferencia-item">
-                    <span>Gabriel paga <strong>R$ 35,00</strong> para Júlia</span>
-                    <span class="badge-pendente">Pendente</span>
-                    <button class="btn-outline-sm">Marcar como pago</button>
+                <p class="texto-suave" style="margin-bottom: 20px;">
+                    O menor número de Pix para todo mundo ficar zerado
+                </p>
+                <div class="lista-transferencias">
+                    ${listaTransferencias}
                 </div>
             </div>
+
+            <!-- Botão Encerrar Grupo -->
+            <div class="card-encerrar-grupo">
+                ${btnEncerrar}
+                <p class="texto-suave" style="font-size: 0.85rem; margin-top: 8px;">
+                    ${podeEncerrar 
+                        ? 'Todos os pagamentos foram confirmados. Você pode encerrar o grupo.' 
+                        : 'Disponível quando todos os pagamentos forem confirmados.'}
+                </p>
+            </div>
+
         </section>
     `;
 }
 
-/**
- * Gera o HTML da visão "Perfil" (#perfil)
- */
+
+// gera o HTML de um item de transferência, pago ou pendente, quando o usario é devedor exibe o modulo pix
+ 
+function renderTransferencia(t, grupoId) {
+    const isPago = t.status === 'pago';
+    const usuarioLogado = appState.usuarioLogado;
+    const isDevedor = t.devedorId === usuarioLogado.id;
+    const textoDevedor = isDevedor ? 'Você' : t.devedorNome;
+
+    // Status badge
+    const badge = isPago
+        ? `<span class="badge-pago">Pago em ${t.dataPagamento}</span>`
+        : `<span class="badge-pendente">Pendente</span>`;
+
+    const acao = isPago
+        ? `<button class="btn-outline-sm" onclick="desfazerPagamento('${grupoId}', '${t.id}')">Desfazer</button>`
+        : `<button class="btn-primary" style="width: fit-content; padding: 8px 16px; font-size: 0.85rem;" 
+                   onclick="marcarComoPago('${grupoId}', '${t.id}')">
+               Marcar como pago
+           </button>`;
+
+    // Só aparece para o devedor em transferencias pendentes
+    const moduloPix = (!isPago && isDevedor) ? `
+        <div class="pix-box">
+            <div class="qr-code-container">
+                <div class="qr-code-placeholder">
+                    <!-- QR Code simulado via SVG -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100" height="100" fill="white"/>
+                        <!-- Padrões de posição (cantos) -->
+                        <rect x="5" y="5" width="20" height="20" fill="black"/>
+                        <rect x="8" y="8" width="14" height="14" fill="white"/>
+                        <rect x="11" y="11" width="8" height="8" fill="black"/>
+                        
+                        <rect x="75" y="5" width="20" height="20" fill="black"/>
+                        <rect x="78" y="8" width="14" height="14" fill="white"/>
+                        <rect x="81" y="11" width="8" height="8" fill="black"/>
+                        
+                        <rect x="5" y="75" width="20" height="20" fill="black"/>
+                        <rect x="8" y="78" width="14" height="14" fill="white"/>
+                        <rect x="11" y="81" width="8" height="8" fill="black"/>
+                        
+                        <!-- Dados simulados -->
+                        <rect x="30" y="10" width="5" height="5" fill="black"/>
+                        <rect x="40" y="15" width="5" height="5" fill="black"/>
+                        <rect x="50" y="10" width="5" height="5" fill="black"/>
+                        <rect x="30" y="25" width="5" height="5" fill="black"/>
+                        <rect x="45" y="30" width="5" height="5" fill="black"/>
+                        <rect x="60" y="20" width="5" height="5" fill="black"/>
+                        <rect x="10" y="40" width="5" height="5" fill="black"/>
+                        <rect x="20" y="50" width="5" height="5" fill="black"/>
+                        <rect x="30" y="45" width="5" height="5" fill="black"/>
+                        <rect x="40" y="55" width="5" height="5" fill="black"/>
+                        <rect x="55" y="40" width="5" height="5" fill="black"/>
+                        <rect x="65" y="50" width="5" height="5" fill="black"/>
+                        <rect x="75" y="45" width="5" height="5" fill="black"/>
+                        <rect x="85" y="55" width="5" height="5" fill="black"/>
+                        <rect x="35" y="70" width="5" height="5" fill="black"/>
+                        <rect x="45" y="80" width="5" height="5" fill="black"/>
+                        <rect x="55" y="75" width="5" height="5" fill="black"/>
+                        <rect x="65" y="85" width="5" height="5" fill="black"/>
+                        <rect x="80" y="70" width="5" height="5" fill="black"/>
+                        <rect x="85" y="85" width="5" height="5" fill="black"/>
+                    </svg>
+                </div>
+                <span class="qr-legenda">QR Code estático</span>
+            </div>
+            
+            <div class="pix-info">
+                <span class="pix-info-label">Chave Pix de ${t.credorNome} (${t.tipoChavePix})</span>
+                <div class="pix-chave">
+                    <input type="text" value="${t.chavePixCredor}" readonly id="pix-chave-${t.id}">
+                    <button class="btn-outline-sm" onclick="copiarChavePix('${t.chavePixCredor}', this)">
+                        Copiar chave
+                    </button>
+                </div>
+                <button class="btn-primary" style="margin-top: 8px; width: fit-content; padding: 8px 16px; font-size: 0.85rem;"
+                        onclick="marcarComoPago('${grupoId}', '${t.id}')">
+                    Marcar como pago
+                </button>
+            </div>
+        </div>
+    ` : '';
+
+    return `
+        <div class="transferencia-item ${isPago ? 'paga' : ''} ${!isPago && isDevedor ? 'destaque' : ''}">
+            <div class="transferencia-header">
+                <span class="transferencia-texto">
+                    <strong>${textoDevedor}</strong> paga 
+                    <strong>${formatarMoeda(t.valor)}</strong> para 
+                    <strong>${t.credorNome}</strong>
+                </span>
+                <div class="transferencia-acoes">
+                    ${badge}
+                    ${acao}
+                </div>
+            </div>
+            ${moduloPix}
+        </div>
+    `;
+}
+
+// Gera o HTML da visão "Perfil" (#perfil)
 function renderViewPerfil() {
     return `
         <section id="view-perfil" class="view-section">
@@ -319,24 +488,54 @@ function renderRightSidebarGrupoAtivo(grupoId) {
 }
 
 function renderRightSidebarFechamento() {
+    const fechamento = appState.fechamentos['g1'];
+    if (!fechamento) return '';
+
+    const total = fechamento.transferencias.length;
+    const pagas = fechamento.transferencias.filter(t => t.status === 'pago').length;
+    const valorQuitado = fechamento.transferencias
+        .filter(t => t.status === 'pago')
+        .reduce((acc, t) => acc + t.valor, 0);
+    const valorTotal = fechamento.transferencias.reduce((acc, t) => acc + t.valor, 0);
+    const percentual = valorTotal > 0 ? (valorQuitado / valorTotal) * 100 : 0;
+
+    const transferenciasHTML = fechamento.transferencias.map(t => {
+        const isPago = t.status === 'pago';
+        const textoDevedor = t.devedorId === appState.usuarioLogado.id ? 'Você' : t.devedorNome;
+        const badge = isPago
+            ? `<span class="badge-pago">Pago</span>`
+            : `<span class="badge-pendente">Pendente</span>`;
+
+        return `
+            <div class="rs-card-pendencia">
+                <div class="rs-pendencia-header">
+                    <span class="rs-pendencia-nome">${textoDevedor} → ${t.credorNome}</span>
+                    ${badge}
+                </div>
+            </div>
+        `;
+    }).join('');
+
     return `
         <div class="rs-section">
             <h3 class="rs-title">Acerto de contas</h3>
-            <p class="rs-subtitle">Quitado <strong>R$ 155,00</strong> de R$ 255,00</p>
-            <div style="width: 100%; height: 6px; background: var(--cor-borda); border-radius: 3px; margin-bottom: 24px;">
-                <div style="width: 60%; height: 100%; background: var(--cor-primaria); border-radius: 3px;"></div>
+            <p class="rs-subtitle">
+                Quitado <strong>${formatarMoeda(valorQuitado)}</strong> de ${formatarMoeda(valorTotal)}
+            </p>
+            
+            <div class="rs-progress-bar">
+                <div class="rs-progress-fill" style="width: ${percentual}%;"></div>
             </div>
-            <p class="rs-subtitle" style="margin-top: -16px; margin-bottom: 24px; font-size: 0.8rem;">1 de 3 pagamentos confirmados</p>
-            <div class="rs-card-pendencia">
-                <div class="rs-pendencia-header"><span class="rs-pendencia-nome">Lucas → Júlia</span><span class="badge-pago">Pago</span></div>
-            </div>
-            <div class="rs-card-pendencia">
-                <div class="rs-pendencia-header"><span class="rs-pendencia-nome">Você → Júlia</span><span class="badge-pendente">Pendente</span></div>
-            </div>
-            <div class="rs-card-pendencia">
-                <div class="rs-pendencia-header"><span class="rs-pendencia-nome">Gabriel → Júlia</span><span class="badge-pendente">Pendente</span></div>
-            </div>
-            <button class="rs-btn-outline" style="margin-top: 24px;" onclick="window.location.hash='#grupo/g1'">Voltar ao grupo</button>
+            <p class="rs-subtitle" style="margin-top: -16px; margin-bottom: 24px; font-size: 0.8rem;">
+                ${pagas} de ${total} pagamentos confirmados
+            </p>
+            
+            ${transferenciasHTML}
+            
+            <button class="rs-btn-outline" style="margin-top: 24px;" 
+                    onclick="window.location.hash='#grupo/g1'">
+                Voltar ao grupo
+            </button>
         </div>
     `;
 }
@@ -353,4 +552,124 @@ function renderRightSidebarPerfil() {
             <button class="rs-btn-outline" style="margin-top: 24px;" onclick="window.location.hash='#grupos'">Ver meus grupos</button>
         </div>
     `;
+}
+
+//Nova Despesa
+function renderViewNovaDespesa(grupoId) {
+    const grupo = appState.grupos.find(g => g.id === grupoId);
+    if (!grupo) return '<p>Grupo não encontrado.</p>';
+
+    const usuarioLogado = appState.usuarioLogado;
+
+    const botoesParticipantes = grupo.membros.map(m => {
+        const isVoce = m.id === usuarioLogado.id;
+        const nomeExibicao = isVoce ? 'Você (Mariana)' : m.nome;
+        const avatarStyle = isVoce 
+            ? `background: #E0F2F1; color: var(--cor-primaria);` 
+            : `background: ${m.corFundo || '#eee'}; color: ${m.corTexto || '#333'};`;
+
+        return `
+            <button type="button" 
+                    class="btn-participante ${isVoce ? 'selecionado' : ''}" 
+                    data-membro-id="${m.id}"
+                    onclick="toggleParticipante(this)">
+                <div class="avatar-participante" style="${avatarStyle}">${m.iniciais}</div>
+                <span>${nomeExibicao}</span>
+            </button>
+        `;
+    }).join('');
+
+    const opcoesPagador = grupo.membros.map(m => {
+        const isVoce = m.id === usuarioLogado.id;
+        const nomeExibicao = isVoce ? `Você (Mariana)` : m.nome;
+        return `<option value="${m.id}">${nomeExibicao}</option>`;
+    }).join('');
+
+    return `
+        <section id="view-nova-despesa" class="view-section">
+            <div class="card-nova-despesa">
+                <h2>Nova despesa</h2>
+                <p class="texto-suave" style="margin-bottom: 24px;">
+                    Marque só quem consumiu esse item. O valor é dividido entre essas pessoas.
+                </p>
+
+                <form id="form-nova-despesa" onsubmit="salvarDespesa(event, '${grupoId}')">
+                    <!-- Descrição -->
+                    <div class="form-group">
+                        <label for="descricao">Descrição</label>
+                        <input type="text" id="descricao" name="descricao" 
+                               placeholder="Pizza de sábado" required>
+                    </div>
+
+                    <!-- Linha: Valor, Data, Categoria -->
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="valor">Valor (R$)</label>
+                            <input type="number" id="valor" name="valor" 
+                                   step="0.01" min="0.01" 
+                                   placeholder="90.00" 
+                                   value="90.00"
+                                   oninput="atualizarDivisao('${grupoId}')" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="data">Data</label>
+                            <input type="date" id="data" name="data" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoria">Categoria</label>
+                            <select id="categoria" name="categoria">
+                                <option value="Alimentação">Alimentação</option>
+                                <option value="Transporte">Transporte</option>
+                                <option value="Hospedagem">Hospedagem</option>
+                                <option value="Bebidas">Bebidas</option>
+                                <option value="Lazer">Lazer</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Quem pagou -->
+                    <div class="form-group">
+                        <label for="pagador">Quem pagou?</label>
+                        <select id="pagador" name="pagador" required>
+                            ${opcoesPagador}
+                        </select>
+                    </div>
+
+                    <!-- Quem participou -->
+                    <div class="form-group">
+                        <label>Quem participou?</label>
+                        <div class="grid-participantes" id="grid-participantes">
+                            ${botoesParticipantes}
+                        </div>
+                        <button type="button" class="link-marcar-todos" 
+                                onclick="toggleTodosParticipantes('${grupoId}')">
+                            Marcar todos
+                        </button>
+                    </div>
+
+                    <!-- Resumo da divisão (atualizado em tempo real) -->
+                    <div class="resumo-divisao" id="resumo-divisao">
+                        <span id="texto-divisao">R$ 90,00 dividido entre 1 pessoa</span>
+                        <strong id="valor-por-pessoa">R$ 90,00 cada</strong>
+                    </div>
+
+                    <!-- Ações -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-outline" 
+                                onclick="window.location.hash='#grupo/${grupoId}'">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            Salvar despesa
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    `;
+}
+
+function renderRightSidebarNovaDespesa(grupoId) {
+    return renderRightSidebarGrupoAtivo(grupoId);
 }
