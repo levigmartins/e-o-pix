@@ -1,0 +1,373 @@
+.main-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto; /* Permite scroll apenas no conteúdo */
+  padding: 32px 40px;
+}
+
+/* Cabeçalho de cima*/
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.breadcrumb {
+  font-size: 0.9rem;
+  color: var(--cor-texto-suave);
+}
+
+.breadcrumb a {
+  color: var(--cor-primaria);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+
+.breadcrumb a:hover {
+  text-decoration-color: var(--cor-primaria);
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--cor-texto);
+}
+
+/* botao de acao no topo*/
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-primary {
+    background-color: var(--cor-primaria);
+    color: var(--cor-superficie);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+/* Container onde o conteúdo de cada tela entra */
+.content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Grid de Cards (Meus Grupos) */
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.card-grupo {
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-grupo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.card-grupo-header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.avatar-grupo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.card-grupo-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+.card-grupo-info span {
+    font-size: 0.8rem;
+    color: var(--cor-texto-suave);
+}
+
+.card-grupo-saldo {
+    border-top: 1px solid var(--cor-borda);
+    padding-top: 12px;
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+}
+
+.card-grupo-saldo strong {
+    font-size: 1.1rem;
+}
+
+/* Grid de Formulários (Novo Grupo) */
+.grid-forms {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.card-form {
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.card-form h4 {
+    margin-bottom: 16px;
+}
+
+.card-form label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 4px;
+}
+
+.card-form input, .card-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--cor-borda-campo);
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.card-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.texto-suave {
+    color: var(--cor-texto-suave);
+    font-size: 0.9rem;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--cor-borda-campo);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: var(--cor-texto);
+}
+
+/* Lista de Despesas */
+.lista-despesas {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.card-despesa {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.card-despesa.despesa-nao-envolvido {
+    opacity: 0.6;
+    border-style: dashed;
+}
+
+.despesa-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--cor-fundo);
+    border-radius: 8px;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.despesa-data strong { font-size: 1.1rem; }
+.despesa-data span { font-size: 0.75rem; color: var(--cor-texto-suave); }
+
+.despesa-info { flex: 1; }
+.despesa-info h4 { font-size: 1rem; margin-bottom: 2px; }
+.despesa-meta { font-size: 0.8rem; color: var(--cor-texto-suave); }
+
+.despesa-participantes {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.tag-participante {
+    background: var(--cor-fundo);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: var(--cor-texto-suave);
+}
+
+.tag-participante.ativo {
+    background: #E0F2F1;
+    color: var(--cor-primaria);
+    font-weight: 600;
+}
+
+.despesa-valor { text-align: right; }
+.despesa-valor strong { display: block; font-size: 1rem; }
+
+.badge-nao-envolvido {
+    font-size: 0.7rem;
+    color: var(--cor-texto-suave);
+    border: 1px dashed var(--cor-borda-campo);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+/* Tabelas (Fechamento e Perfil) */
+.card-tabela, .card-resumo, .card-transferencias {
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 16px;
+}
+
+.grid-resumo {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.resumo-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.resumo-item span { font-size: 0.85rem; color: var(--cor-texto-suave); }
+.resumo-item strong { font-size: 1.25rem; }
+
+.tabela-saldos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+
+.tabela-saldos th, .tabela-saldos td {
+    text-align: left;
+    padding: 12px 8px;
+    border-bottom: 1px solid var(--cor-borda);
+    font-size: 0.9rem;
+}
+
+.tabela-saldos th { color: var(--cor-texto-suave); font-weight: 500; }
+
+.linha-destaque { background: #F1F8F7; }
+.linha-total { font-weight: 700; border-top: 2px solid var(--cor-borda); }
+
+/* Transferências */
+.transferencia-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+.transferencia-item.destaque {
+    border-color: var(--cor-primaria);
+    background: #F1F8F7;
+}
+
+.pix-box {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    padding: 16px;
+    background: var(--cor-fundo);
+    border-radius: 8px;
+}
+
+.qr-code-placeholder {
+    width: 100px;
+    height: 100px;
+    background: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: #666;
+    border-radius: 8px;
+}
+
+.pix-info { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.pix-chave { display: flex; gap: 8px; }
+.pix-chave input { flex: 1; padding: 8px; border: 1px solid var(--cor-borda-campo); border-radius: 6px; }
+
+.btn-outline-sm {
+    background: transparent;
+    border: 1px solid var(--cor-borda-campo);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Perfil */
+.perfil-header { 
+    display: flex; 
+    align-items: center; 
+    gap: 16px; 
+    margin-bottom: 24px; 
+
+}
+.avatar-grande {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: #E0F2F1; color: var(--cor-primaria);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: bold;
+}
+.grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.link-primario { color: var(--cor-primaria); font-weight: 600; text-decoration: underline; }
