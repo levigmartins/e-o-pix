@@ -24,6 +24,16 @@ linkEntrar.addEventListener("click", function (event) {
     mostrarAba("entrar");
 });
 
+formCriar.addEventListener("submit", function (event) {
+    event.preventDefault();
+    redirecionarPagina(event);
+});
+
+formEntrar.addEventListener("submit", function (event) {
+    event.preventDefault();
+    redirecionarPagina(event);
+});
+
 /* ------- FUNLÇOES AUXILIARES ------- */
 
 function mostrarAba(aba) {
@@ -43,4 +53,8 @@ function mostrarAba(aba) {
         abaEntrar.classList.remove("ativa");
         abaEntrar.setAttribute("aria-selected", "false");
     }
+}
+
+function redirecionarPagina(event) {
+    window.location.href = event.target.action;
 }
